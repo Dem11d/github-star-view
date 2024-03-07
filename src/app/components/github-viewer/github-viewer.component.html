@@ -1,0 +1,9 @@
+    <nz-card nzTitle="GitHub repository viewer" >
+        <ng-container *ngIf="repositories$ | async as repositories; else loading">
+            <repository-table [repositories]="repositories"></repository-table>
+        </ng-container>
+    </nz-card>
+
+    <ng-template #loading>
+        <loader></loader>
+      </ng-template>

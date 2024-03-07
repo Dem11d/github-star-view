@@ -1,0 +1,20 @@
+<nz-table #repositoriesTable [nzData]="repositories">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Created</th>
+        <th>Forks</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of repositoriesTable.data">
+        <td>{{data.name}}</td>
+        <td>{{data.description}}</td>
+        <td>{{data.created_at | date}}</td>
+        <td>
+            {{data.forks}}
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
