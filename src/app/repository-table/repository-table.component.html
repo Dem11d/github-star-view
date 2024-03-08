@@ -1,19 +1,74 @@
-<nz-table #repositoriesTable [nzData]="repositories">
+<nz-table
+ nzFrontPagination="false" 
+ #repositoriesTable 
+ [nzData]="repositories.items"
+  [nzShowPagination]="true"
+  [nzPageIndex]="page" 
+  [nzPageSize]="30" 
+  [nzTotal]="repositories.total_count"
+  (nzPageIndexChange)="pageIndexChange.emit($event)"
+>
     <thead>
       <tr>
+        <th>Favorite</th>
+        <th>Avatar</th>
         <th>Name</th>
         <th>Description</th>
+         <th nzCustomFilter nzColumnKey="stars" [nzSortFn]="true">
+        Stars
+        <nz-filter-trigger 
+          [(nzVisible)]="filterVisible" 
+          [nzActive]="filter['minStars'] !== null || filter['maxStars'] !== null"
+          [nzDropdownMenu]="filterMenu">
+          <i nz-icon nzType="filter"></i>
+        </nz-filter-trigger>
+        <nz-dropdown-menu #filterMenu>
+          <ng-container *ngTemplateOutlet="starsFilter"></ng-container>
+        </nz-dropdown-menu>
+        <ng-template #starsFilter>
+            <div class="filter-panel">
+                <div>
+                    <label>Min Stars:</label>
+                    <nz-input-number [(ngModel)]="filter['minStars']" [nzMin]="1"></nz-input-number>
+                </div>
+                <div>
+                    <label>Max Stars:</label>
+                    <nz-input-number [(ngModel)]="filter['maxStars']" [nzMin]="1"></nz-input-number>
+                </div>
+                <button nz-button (click)="applyFilter()">apply</button>
+              </div>
+        </ng-template>
+      </th>
         <th>Created</th>
         <th>Forks</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of repositoriesTable.data">
-        <td>{{data.name}}</td>
+        <td>
+            <button nz-button nzType="text" >
+                <span *ngIf="favorite.includes(data.id); else inFavorite" nz-icon nzType="star" nzTheme="fill" (click)="handleRemoveFromFavorite(data.id)"></span>
+
+                <ng-template #inFavorite>
+                    <span nz-icon nzType="star" nzTheme="outline" (click)="handleAddToFavorite(data.id)" ></span>
+
+                </ng-template>
+            </button>    
+        </td>
+        <td> <img width="50px" height="50px" nz-image [nzSrc]="data.owner.avatar_url"></td>
+        <td> <a target=”_blank” href="{{data.html_url}}"> {{data.name}}</a></td>
         <td>{{data.description}}</td>
+        <td>
+            <div class="stars-column">
+                <span nz-icon nzType="star" nzTheme="outline"></span>{{data.stargazers_count}}
+            </div>
+        </td>
         <td>{{data.created_at | date}}</td>
         <td>
+            <div class="stars-column">
+            <span nz-icon nzType="fork" nzTheme="outline"></span>
             {{data.forks}}
+            </div>
         </td>
       </tr>
     </tbody>

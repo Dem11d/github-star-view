@@ -1,6 +1,13 @@
     <nz-card nzTitle="GitHub repository viewer" >
         <ng-container *ngIf="repositories$ | async as repositories; else loading">
-            <repository-table [repositories]="repositories"></repository-table>
+            <repository-table 
+            (pageIndexChange)="handleChangePageNumber($event)"
+            (filterChange)="handleFilterChange($event)"
+            (updateFavorite)="handleUpdateFavorite($event)"
+            [favorite]="favorite"
+            [filter]="filter"
+            [page]="pageIndex"
+            [repositories]="repositories"></repository-table>
         </ng-container>
     </nz-card>
 
